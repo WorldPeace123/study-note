@@ -1,0 +1,22 @@
+units 		metal
+boundary 	p p p 
+atom_style 	atomic
+newton 		on
+thermo 		100
+read_data	input.data
+neighbor 	1.0 bin
+neigh_modify 	every 10 delay 0 check no
+
+pair_style 	allegro
+pair_coeff 	* * ./RTX-3090.pth Ag
+dump          	myDump all custom 10 nvt.dump id element x y z
+dump_modify   	myDump sort id element Ag
+
+thermo_style  	custom step time pe ke etotal temp press vol density
+thermo        	10
+
+velocity      	all create 1000.0 12138
+
+fix             NVT all nvt temp 1000 1000 0.1
+run             1000
+write_data      nvt-out.data
